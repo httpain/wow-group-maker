@@ -79,7 +79,7 @@ public class Group {
 
     @Override
     public String toString() {
-        return members().stream().map( member -> {if (member == null) {return "null";} else {return member.name;} }).collect(Collectors.joining("/"));
+        return members().stream().map( member -> {if (member == null) {return "null";} else {return member.getName();} }).collect(Collectors.joining("/"));
     }
 
     @Override

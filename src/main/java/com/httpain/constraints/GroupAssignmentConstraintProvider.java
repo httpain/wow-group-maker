@@ -27,9 +27,9 @@ public class GroupAssignmentConstraintProvider implements ConstraintProvider {
     private Constraint rolesMustMatch(ConstraintFactory constraintFactory) {
         return constraintFactory
                 .forEachIncludingNullVars(Group.class)
-                .filter(group -> (group.getTank() != null && group.getTank().role != Role.Tank)
-                        || (group.getHealer() != null && group.getHealer().role != Role.Healer)
-                        || group.dps().stream().filter(Objects::nonNull).anyMatch(dps -> dps.role != Role.Dps))
+                .filter(group -> (group.getTank() != null && group.getTank().getRole() != Role.Tank)
+                        || (group.getHealer() != null && group.getHealer().getRole() != Role.Healer)
+                        || group.dps().stream().filter(Objects::nonNull).anyMatch(dps -> dps.getRole() != Role.Dps))
                 .penalize(HardSoftScore.ofHard(1000))
                 .asConstraint("Roles must match");
     }
@@ -72,7 +72,7 @@ public class GroupAssignmentConstraintProvider implements ConstraintProvider {
     private Constraint shouldMatchKeyRanges(ConstraintFactory constraintFactory) {
         return constraintFactory
                 .forEachIncludingNullVars(Group.class)
-                .filter(group -> group.members().stream().anyMatch(Objects::nonNull) && group.members().stream().filter(Objects::nonNull).map(character -> character.keyLevel).collect(Collectors.toSet()).size() <= 1)
+                .filter(group -> group.members().stream().anyMatch(Objects::nonNull) && group.members().stream().filter(Objects::nonNull).map(character -> character.getKeyLevel()).collect(Collectors.toSet()).size() <= 1)
                 .reward(HardSoftScore.ofSoft(10000))
                 .asConstraint("Key ranges should match");
     }

@@ -1,5 +1,5 @@
 package com.httpain.constraints;
 
-public enum Role {
+enum class Role {
     Tank, Healer, Dps
 }

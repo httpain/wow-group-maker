@@ -35,7 +35,7 @@ public class Launcher {
                 .withSolutionClass(Assignment.class)
                 .withEntityClasses(Group.class)
                 .withConstraintProviderClass(GroupAssignmentConstraintProvider.class)
-                        .withTerminationConfig(new TerminationConfig().withUnimprovedMillisecondsSpentLimit(200L))
+                        .withTerminationConfig(new TerminationConfig().withUnimprovedMillisecondsSpentLimit(1000L))
                 /*.withTerminationSpentLimit(Duration.ofSeconds(30))*/);
 
         Assignment problem = new Assignment(characters, groups);
@@ -49,7 +49,7 @@ public class Launcher {
                 if (member == null) {
                     System.out.print(" null\n");
                 } else {
-                    System.out.printf(" %s : %s (%s)\n", member.role, member.name, member.keyLevel);
+                    System.out.printf(" %s : %s (%s)\n", member.getRole(), member.getName(), member.getKeyLevel());
                 }
             });
         });
