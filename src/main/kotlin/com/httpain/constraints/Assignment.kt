@@ -10,11 +10,12 @@ import ai.timefold.solver.core.api.score.buildin.hardsoft.HardSoftScore
 @PlanningSolution
 @NoArgConstructor
 data class Assignment(
-    @ValueRangeProvider
-    @ProblemFactCollectionProperty
-    val characters: List<Character>,
 
     @PlanningEntityCollectionProperty
+    val characters: List<Character>,
+
+    @ValueRangeProvider
+    @ProblemFactCollectionProperty
     val groups: List<Group>,
 
     @PlanningScore

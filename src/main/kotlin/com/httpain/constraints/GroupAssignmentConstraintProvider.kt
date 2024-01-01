@@ -8,15 +8,16 @@ import ai.timefold.solver.core.api.score.stream.ConstraintProvider
 class GroupAssignmentConstraintProvider : ConstraintProvider {
     override fun defineConstraints(constraintFactory: ConstraintFactory): Array<Constraint> {
         return arrayOf(
-            rolesMustMatch(constraintFactory),
+//            rolesMustMatch(constraintFactory),
             playersMustNotRepeatInsideGroup(constraintFactory),
             playersMustNotRepeatBetweenGroups(constraintFactory),
             shouldMatchKeyRanges(constraintFactory),
-            penalizeEmptySlots(constraintFactory)
+            penalizeEmptySlots(constraintFactory),
+            checkGroupSize(constraintFactory)
         )
     }
 
-    private fun rolesMustMatch(constraintFactory: ConstraintFactory): Constraint {
+/*    private fun rolesMustMatch(constraintFactory: ConstraintFactory): Constraint {
         return constraintFactory
             .forEachIncludingNullVars(Group::class.java)
             .filter { group ->
@@ -26,12 +27,20 @@ class GroupAssignmentConstraintProvider : ConstraintProvider {
             }
             .penalize(HardSoftScore.ofHard(1000))
             .asConstraint("Roles must match")
+    }*/
+
+    private fun checkGroupSize(constraintFactory: ConstraintFactory): Constraint {
+        return constraintFactory
+            .forEachIncludingNullVars(Group::class.java)
+            .filter { it.members.orEmpty().size > 5 || it.members.orEmpty().size < 2 }
+            .penalize(HardSoftScore.ofHard(1000))
+            .asConstraint("Too many group members")
     }
 
     private fun playersMustNotRepeatInsideGroup(constraintFactory: ConstraintFactory): Constraint {
         return constraintFactory
             .forEachIncludingNullVars(Group::class.java)
-            .filter { group -> group.members().filterNotNull().hasRepeatingMembers() }
+            .filter { group -> group.members.orEmpty().filterNotNull().hasRepeatingMembers() }
             .penalize(HardSoftScore.ofHard(1000))
             .asConstraint("Players must not repeat inside group");
     }
@@ -48,21 +57,21 @@ class GroupAssignmentConstraintProvider : ConstraintProvider {
     private fun penalizeEmptySlots(constraintFactory: ConstraintFactory): Constraint {
         return constraintFactory
             .forEachIncludingNullVars(Group::class.java)
-            .filter { it.members().contains(null) }
-            .penalize(HardSoftScore.ofSoft(10)) { group -> group.members().count { it == null } }
+            .filter { it.members.orEmpty().contains(null) }
+            .penalize(HardSoftScore.ofSoft(10)) { group -> group.members.orEmpty().count { it == null } }
             .asConstraint("Penalize empty slots")
     }
 
     private fun shouldMatchKeyRanges(constraintFactory: ConstraintFactory): Constraint {
         return constraintFactory
             .forEachIncludingNullVars(Group::class.java)
-            .filter { group -> group.members().filterNotNull().isNotEmpty() && group.members().filterNotNull().map { it.keyLevel }.toSet().size <= 1 }
+            .filter { group -> group.members.orEmpty().filterNotNull().isNotEmpty() && group.members.orEmpty().filterNotNull().map { it.keyLevel }.toSet().size <= 1 }
             .reward(HardSoftScore.ofSoft(10000))
             .asConstraint("Key ranges should match")
     }
 
     private fun groupsHaveDistinctPlayers(a: Group, b: Group): Boolean {
-        return (a.members().filterNotNull() + b.members().filterNotNull()).hasRepeatingMembers().not()
+        return (a.members.orEmpty().filterNotNull() + b.members.orEmpty().filterNotNull()).hasRepeatingMembers().not()
     }
 
     private fun List<Any>.hasRepeatingMembers(): Boolean {
