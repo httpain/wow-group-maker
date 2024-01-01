@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.optaplanner:optaplanner-core:9.44.0.Final")
+    implementation("ai.timefold.solver:timefold-solver-core:1.5.0")
     implementation("ch.qos.logback:logback-classic:1.4.14")
     testImplementation(kotlin("test"))
 }

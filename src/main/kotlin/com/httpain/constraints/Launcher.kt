@@ -1,8 +1,8 @@
 package com.httpain.constraints
 
-import org.optaplanner.core.api.solver.SolverFactory
-import org.optaplanner.core.config.solver.SolverConfig
-import org.optaplanner.core.config.solver.termination.TerminationConfig
+import ai.timefold.solver.core.api.solver.SolverFactory
+import ai.timefold.solver.core.config.solver.SolverConfig
+import ai.timefold.solver.core.config.solver.termination.TerminationConfig
 
 private val characters = listOf(
     Character("Alice", Role.Healer, 10),

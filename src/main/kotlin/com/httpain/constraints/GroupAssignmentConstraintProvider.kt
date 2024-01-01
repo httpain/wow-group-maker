@@ -1,9 +1,9 @@
 package com.httpain.constraints
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore
-import org.optaplanner.core.api.score.stream.Constraint
-import org.optaplanner.core.api.score.stream.ConstraintFactory
-import org.optaplanner.core.api.score.stream.ConstraintProvider
+import ai.timefold.solver.core.api.score.buildin.hardsoft.HardSoftScore
+import ai.timefold.solver.core.api.score.stream.Constraint
+import ai.timefold.solver.core.api.score.stream.ConstraintFactory
+import ai.timefold.solver.core.api.score.stream.ConstraintProvider
 
 class GroupAssignmentConstraintProvider : ConstraintProvider {
     override fun defineConstraints(constraintFactory: ConstraintFactory): Array<Constraint> {

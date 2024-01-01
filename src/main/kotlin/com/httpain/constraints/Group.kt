@@ -1,8 +1,8 @@
 package com.httpain.constraints
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity
-import org.optaplanner.core.api.domain.lookup.PlanningId
-import org.optaplanner.core.api.domain.variable.PlanningVariable
+import ai.timefold.solver.core.api.domain.entity.PlanningEntity
+import ai.timefold.solver.core.api.domain.lookup.PlanningId
+import ai.timefold.solver.core.api.domain.variable.PlanningVariable
 
 @PlanningEntity
 @NoArgConstructor
