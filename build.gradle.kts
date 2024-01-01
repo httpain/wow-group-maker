@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.0"
+    kotlin("plugin.noarg") version "1.9.0"
     application
 }
 
@@ -26,4 +27,8 @@ kotlin {
 
 application {
     mainClass.set("MainKt")
+}
+
+noArg {
+    annotation("com.httpain.constraints.NoArgConstructor")
 }
