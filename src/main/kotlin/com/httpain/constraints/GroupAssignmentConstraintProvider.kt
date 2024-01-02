@@ -16,7 +16,7 @@ class GroupAssignmentConstraintProvider : ConstraintProvider {
         )
     }
 
-    private fun rolesMustMatch(constraintFactory: ConstraintFactory): Constraint {
+    internal fun rolesMustMatch(constraintFactory: ConstraintFactory): Constraint {
         return constraintFactory
             .forEachIncludingNullVars(Group::class.java)
             .filter { group ->
@@ -24,40 +24,40 @@ class GroupAssignmentConstraintProvider : ConstraintProvider {
                         || group.healer != null && group.healer!!.role != Role.Healer
                         || group.dps().filterNotNull().any { it.role != Role.Dps }
             }
-            .penalize(HardSoftScore.ofHard(1000))
+            .penalize(HardSoftScore.ofHard(Scores.PENALTY_ON_ROLE_MISMATCH))
             .asConstraint("Roles must match")
     }
 
-    private fun playersMustNotRepeatInsideGroup(constraintFactory: ConstraintFactory): Constraint {
+    internal fun playersMustNotRepeatInsideGroup(constraintFactory: ConstraintFactory): Constraint {
         return constraintFactory
             .forEachIncludingNullVars(Group::class.java)
             .filter { group -> group.members().filterNotNull().hasRepeatingMembers() }
-            .penalize(HardSoftScore.ofHard(1000))
+            .penalize(HardSoftScore.ofHard(Scores.PENALTY_ON_DUPLICATE_PLAYERS_IN_GROUP))
             .asConstraint("Players must not repeat inside group");
     }
 
-    private fun playersMustNotRepeatBetweenGroups(constraintFactory: ConstraintFactory): Constraint {
+    internal fun playersMustNotRepeatBetweenGroups(constraintFactory: ConstraintFactory): Constraint {
         return constraintFactory
             .forEachIncludingNullVars(Group::class.java)
             .join(constraintFactory.forEachIncludingNullVars(Group::class.java))
             .filter { it, other -> it.groupNumber < other.groupNumber && !groupsHaveDistinctPlayers(it, other) }
-            .penalize(HardSoftScore.ofHard(1000))
+            .penalize(HardSoftScore.ofHard(Scores.PENALTY_ON_DUPLICATE_PLAYERS_BETWEEN_GROUPS))
             .asConstraint("Players must not repeat between groups")
     }
 
-    private fun penalizeEmptySlots(constraintFactory: ConstraintFactory): Constraint {
+    internal fun penalizeEmptySlots(constraintFactory: ConstraintFactory): Constraint {
         return constraintFactory
             .forEachIncludingNullVars(Group::class.java)
             .filter { it.members().contains(null) }
-            .penalize(HardSoftScore.ofSoft(10)) { group -> group.members().count { it == null } }
+            .penalize(HardSoftScore.ofSoft(Scores.PENALTY_BASE_ON_EMPTY_SLOT)) { group -> group.members().count { it == null } }
             .asConstraint("Penalize empty slots")
     }
 
-    private fun shouldMatchKeyRanges(constraintFactory: ConstraintFactory): Constraint {
+    internal fun shouldMatchKeyRanges(constraintFactory: ConstraintFactory): Constraint {
         return constraintFactory
             .forEachIncludingNullVars(Group::class.java)
             .filter { group -> group.members().filterNotNull().isNotEmpty() && group.members().filterNotNull().map { it.keyLevel }.toSet().size <= 1 }
-            .reward(HardSoftScore.ofSoft(10000))
+            .reward(HardSoftScore.ofSoft(Scores.REWARD_ON_KEY_RANGE_MATCH))
             .asConstraint("Key ranges should match")
     }
 
